@@ -1,3 +1,5 @@
+import config from 'config';
+
 import createError from 'http-errors';
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
@@ -6,9 +8,14 @@ import indexRouter from './routes/index';
 
 const app = express();
 
+Object.assign(app.locals, {
+  baseDir: path.resolve(config.view.directory),
+  config: config,
+})
+
 // view engine setup
-app.set('views', 'views');
-app.set('view engine', 'pug');
+app.set('views', app.locals.baseDir);
+app.set('view engine', config.view.engine);
 
 app.use('/static', express.static('public'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -36,11 +43,8 @@ app.use(function(err: any, req: Request, res: Response, next: NextFunction) {
     res.render('error');
 });
 
-
-const port = '3000';
-app.set('port', port);
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+app.listen(config.server.port, () => {
+  console.log(`App listening on port ${config.server.port}`);
 });
 
 

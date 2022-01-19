@@ -1,0 +1,6 @@
+server:
+  port: 3000
+
+view:
+  engine: 'pug'
+  directory: 'views'
